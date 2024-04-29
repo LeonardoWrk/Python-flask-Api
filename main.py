@@ -1,7 +1,12 @@
 from flask import Flask , request, jsonify
-from database import dataBase
+from  modules.data_manager  import ENGINE, Users
+
 
 app = Flask(__name__)
+
+conn = ENGINE.get_connection()
+_ = Users(conn)
+ENGINE.release_connection(conn)
 
 @app.route("/")
 def hello_world():
@@ -14,6 +19,8 @@ def getValue():
 
 @app.route('/addvalue', methods=['POST'])
 def addValue():
+    conn = ENGINE.get_connection()
+    UserInterface = Users(conn)
     # Verifica se a solicitação POST contém dados JSON
     if request.is_json:
         # Recebe os dados JSON do corpo da solicitação
@@ -34,10 +41,13 @@ def addValue():
                 print('teste', dataBase)
                 print('teste', dataBase) 
                 print('teste', dataBase)
-            else:
+            else: 
+                ENGINE.release_connection(conn)
                 return jsonify({'error': 'Chave e/ou valor ausentes nos dados enviados!'}), 400
+        ENGINE.release_connection(conn)
         return jsonify({'message': 'Valores adicionados com sucesso ao dicionário!'}), 200
     else:
+        ENGINE.release_connection(conn)
         return jsonify({'error': 'Solicitação deve conter dados JSON!'}), 400
 
 @app.route('/deletevalue/<chave>', methods=['DELETE'])
@@ -60,4 +70,4 @@ def updateValue(chave):
         else:
             return jsonify({'error': 'O campo "value" é obrigatório nos dados enviados!'}), 400
     else:
-        return jsonify({'error': 'Chave não encontrada no dicionário!'}), 40
+        return jsonify({'error': 'Chave não encontrada no dicionário!'}), 404

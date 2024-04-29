@@ -31,3 +31,14 @@
 ``- Adiciona botões de login com Google na página de login``
 
 ``Issue #123``
+
+```mermaid
+sequenceDiagram
+    participant F as Frontend
+    participant B as Backend
+
+    F->>+B: HTTP GET /addData
+    Note over B: Process Request
+    B-->>-F: JSON Response
+    Note over F: Render Data
+```

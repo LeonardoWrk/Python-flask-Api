@@ -30,3 +30,5 @@ class SQLiteConnectionPool:
         while not self.connections.empty():
             connection = self.connections.get()
             connection.close()
+
+            ##batata

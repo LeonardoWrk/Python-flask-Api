@@ -25,9 +25,20 @@ class Users:
         sql_update_query = """INSERT INTO Users (
             Name,
             Email,
-            PassWord 
+            PassWord
         ) VALUES (?, ?, ?)"""
         cur.execute(sql_update_query, (name, email, password,))
         self.connection.commit()
 
         return
+
+
+    def getdData(self):
+
+        cur = self.connection.cursor()
+        sql_get_query = """SELECT * FROM Users"""
+        cur.execute(sql_get_query)
+        rows = cur.fetchall()
+    
+   
+        return rows

@@ -31,4 +31,3 @@ class SQLiteConnectionPool:
             connection = self.connections.get()
             connection.close()
 
-            ##batata

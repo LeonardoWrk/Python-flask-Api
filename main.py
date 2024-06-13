@@ -1,8 +1,6 @@
 from flask import Flask , request, jsonify
 from  modules.data_manager  import ENGINE, Users
 
-
-
 app = Flask(__name__)
 
 conn = ENGINE.get_connection()
@@ -15,9 +13,10 @@ def hello_world():
 
 @app.route('/database', methods=['GET'])
 def getValue():
-
      # Utilizar jsonify é uma boa prática, pois torna explícito que estou retornando um objeto JSON.
-     return _.addData()
+     data = _.getdData()
+
+     return data
 
 @app.route('/addvalue', methods=['POST'])
 def addValue():
@@ -29,27 +28,27 @@ def addValue():
         data = request.json
         print(data)
         # Verifica se a chave e o valor estão presentes nos dados recebidos
-        index = 1
         for item in data:
             print('porraaa',item)
-            minhaChave = item['key'] + str(index)  # Usando uma chave única para cada valor
-            meuValor = item['value']
-            password = 'batata'
-            if 'key' not in item and 'value' not in item:
-                ENGINE.release_connection(conn)
-                return jsonify({'error': 'Chave e/ou valor ausentes nos dados enviados!'}), 400    
-        # Adiciona a chave e o valor ao dicionário
-    
-        print(minhaChave)
-        print(meuValor)
-        _.addData(minhaChave, meuValor, password)
-                            
-        index += 1
 
-                                
-                   
-                                
-                        
+            if 'key' not in item and 'value' not in item:
+                minhaChave = item['key']  # Usando uma chave única para cada valor
+                meuValor = item['value']
+                password = 'batata'
+                ENGINE.release_connection(conn)
+                return jsonify({'error': 'Chave e/ou valor ausentes nos dados enviados!'}), 400
+        # Adiciona a chave e o valor ao dicionário
+
+            print(minhaChave)
+            print(meuValor)
+            _.addData(minhaChave, meuValor, password)
+            
+        ENGINE.release_connection(conn)
+        return jsonify({'message': 'Valores adicionados com sucesso ao dicionário!'}), 200
+
+
+
+
 
 
 @app.route('/deletevalue/<chave>', methods=['DELETE'])
@@ -66,7 +65,7 @@ def updateValue(chave):
     Update the value associated with the given key in the database.
 
     Parameters:
-        chave (str): The key whose value needs to be updated.   
+        chave (str): The key whose value needs to be updated.
 
     Returns:
         JSON: A JSON response indicating the status of the operation.
